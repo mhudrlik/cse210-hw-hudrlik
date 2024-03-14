@@ -4,36 +4,49 @@ using System.Linq;
 
 public class Scripture
 {
-    private List<ScriptureWord> words;
+    public string Category { get; }
+    public string Book { get; }
+    public int Chapter { get; }
+    public List<Verse> Verses { get; }
 
-    public ScriptureReference Reference { get; private set; }
-
-    public Scripture(string reference, string text)
+    public Scripture(string category, string book, int chapter, List<Verse> verses)
     {
-        Reference = new ScriptureReference(reference);
-        words = text.Split(' ').Select(word => new ScriptureWord(word)).ToList();
-    }
-
-    public void Display()
-    {
-        Console.WriteLine($"{Reference}:");
-        Console.WriteLine(string.Join(" ", words));
-    }
-
-    public void HideRandomWords()
-    {
-        Random random = new Random();
-        int wordsToHide = random.Next(1, words.Count / 2);
-
-        for (int i = 0; i < wordsToHide; i++)
-        {
-            int index = random.Next(words.Count);
-            words[index].IsHidden = true;
-        }
+        Category = category;
+        Book = book;
+        Chapter = chapter;
+        Verses = verses;
     }
 
     public bool AllWordsHidden()
     {
-        return words.All(word => word.IsHidden);
+        return Verses.All(verse => verse.AllWordsHidden());
+    }
+
+    public void HideRandomWords()
+    {
+        foreach (Verse verse in Verses)
+        {
+            verse.HideRandomWord();
+        }
+    }
+
+    public string GetHiddenText()
+    {
+        string scriptureText = $"{Category}\n{Book} {Chapter}:\n";
+        foreach (Verse verse in Verses)
+        {
+            scriptureText += $"{verse.GetHiddenText()}\n";
+        }
+        return scriptureText;
+    }
+
+    public string GetFullText()
+    {
+        string scriptureText = $"{Category}\n{Book} {Chapter}:\n";
+        foreach (Verse verse in Verses)
+        {
+            scriptureText += $"{verse.GetFullText()}\n";
+        }
+        return scriptureText;
     }
 }
