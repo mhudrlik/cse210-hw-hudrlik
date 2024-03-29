@@ -39,7 +39,7 @@ public class GoalManager
 
         foreach (var goal in _goals)
         {
-            totalPointsEarnedFromGoals += goal.PointsEarned; // Accumulate points earned from each goal
+            totalPointsEarnedFromGoals += goal.PointsEarned;
             Console.WriteLine($"{goal.GetDetailsString()} [Complete: {goal.IsComplete()}]");
         }
 
